@@ -1,0 +1,41 @@
+comp <- read.csv("C:/Users/ual-laptop/Desktop/css.csv")
+> set.seed(1985)
+>
+> trainIndex <- createDataPartition(comp$Major, p=0.2, list = FALSE, times = 1)
+> train <- comp[trainIndex,]
+> test <- comp [-trainIndex,]
+> #Set control parameters for model training
+> #
+> fitCtrl <- trainControl(method = "repeatedcv",
++                         number = 5,
++                         repeats = 2,
++                         summaryFunction=twoClassSummary,
++                         ## Estimate class probabilities
++                         classProbs = TRUE,
++                         ## returnData = TRUE,
++                         savePredictions = TRUE,
++                         ## Search "grid" or "random"
++                         search = "random",
++                         ## Down-sampling
++                         sampling = "down",
++                         ## Use cluster
++                         allowParallel = TRUE)
+> # Set testing grid for random forest
+> #
+> rfGrid <-  expand.grid(mtry = 1:6)
+> #
+> set.seed(1985)
+> rf.res <- train(Major ~ .,
++                 data=train,
++                 method="rf",
++                 trControl=fitCtrl,
++                 tuneGrid=rfGrid,
++                 #tuneLength=10,
++                 metric="ROC",
++                 verbose=FALSE)
+
+#
+rf.res
+#
+#Random Forest 
+#
