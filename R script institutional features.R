@@ -78,4 +78,23 @@ rf.res <- train(Major ~ .,
                 verbose=FALSE)
 #
 rf.res
-
+#
+#Random Forest 
+#
+# Extract predictions
+#
+confusionMatrix(predict(rf.res, train, type="raw"), train$Major)
+#
+#Confusion Matrix and Statistics
+#
+#
+confusionMatrix(predict(rf.res, test, type="raw"), test$Major)
+#
+#Confusion Matrix and Statistics
+#
+# Variable importance
+#
+rfImp <- varImp(rf.res)
+plot(rfImp)
+#
+##For the random forest, the training accuracy was ____%, and the testing accuracy was ___%. The three most important features from the random forest were_______. 
