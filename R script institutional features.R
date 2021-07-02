@@ -36,8 +36,6 @@ cl <- makeCluster(detectCores() - 1)
 dir.create(path = "data")
 dir.create(path = "output")
 
-practice <- read.csv("C:/Users/ual-laptop/Desktop/Taxonomy.csv")
-
 comp <- read.csv("C:/Users/ual-laptop/Desktop/css.csv")
 
 #Split data
