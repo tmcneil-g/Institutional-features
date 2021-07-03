@@ -42,6 +42,7 @@ comp <- read.csv("C:/Users/ual-laptop/Desktop/css.csv")
 set.seed(1985)
 
 #
+trainIndex <- createDataPartition(comp$Major, p=0.2, list = FALSE, times = 1)
 train <- comp[trainIndex,]
 test <- comp [-trainIndex,]
 #Set control parameters for model training
