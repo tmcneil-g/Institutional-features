@@ -37,6 +37,7 @@ dir.create(path = "data")
 dir.create(path = "output")
 
 comp <- read.csv("C:/Users/ual-laptop/Desktop/css_1.csv")
+na.omit(comp)
 
 #Split data
 set.seed(1985)
