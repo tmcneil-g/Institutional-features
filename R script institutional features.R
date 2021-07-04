@@ -36,7 +36,7 @@ cl <- makeCluster(detectCores() - 1)
 dir.create(path = "data")
 dir.create(path = "output")
 
-comp <- read.csv("C:/Users/ual-laptop/Desktop/css_1.csv")
+comp <- read.csv("C:/Users/ual-laptop/Desktop/css_3.csv")
 
 comp$Major <- factor(comp$Major, labels=c("No_DS", "DS"))
 
