@@ -82,6 +82,8 @@ rf.res
 #
 #Random Forest 
 #
+install.packages("e1071")
+library("e1071")
 # Extract predictions
 #
 confusionMatrix(predict(rf.res, train, type="raw"), train$Major)
