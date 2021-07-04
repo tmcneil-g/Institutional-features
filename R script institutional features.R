@@ -1,4 +1,4 @@
-# Machine learning of institutional features
+# Machine learning of institutional variables
 # Torbet McNeil
 # tmcneil@email.arizona.edu
 # 2021-7-4
