@@ -1,3 +1,9 @@
+# Machine learning of institutional features
+# Torbet McNeil
+# tmcneil@email.arizona.edu
+# 2021-7-4
+
+
 install.packages("caret")
 install.packages("randomForest")
 install.packages("mlbench")
