@@ -101,8 +101,8 @@ plot(rfImp)
 
 # Use Shapley values to measure feature effects
 
-X <- dat[which(names(dat) != "voted2016")]
-predictor <- Predictor$new(rf.res, data = X, y = dat$voted2016)
+X <- dat[which(names(dat) != "Major")]
+predictor <- Predictor$new(rf.res, data = X, y = dat$Major)
 
 shapley <- Shapley$new(predictor, x.interest = X[1,])
 shapley$plot()
