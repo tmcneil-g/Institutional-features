@@ -1,0 +1,39 @@
+# Logistic regression of institutional variables
+# Torbet McNeil
+# tmcneil@email.arizona.edu
+# 2021-7-4
+
+data <-read.table(file="EDP641_Midterm.csv", header=TRUE, sep=",")
+install.packages(“psych”)
+describe(data)
+
+#logistic model
+Model1 <- lm(write ~ read + sch + mot + sch:mot, data= data) 
+#check VIF values
+install.packages("faraway")
+require(faraway)
+sqrt(vif(Model1))
+
+#center and scale
+data$readc <- scale(data$read, center=TRUE, scale=FALSE)
+data$motc <- scale(data$mot, center=TRUE, scale=FALSE) 
+describe(data) 
+
+#check VIF values again
+Model1b <- lm(write ~ readc + sch + motc + sch:motc, data=data)
+sqrt(vif(Model1b))
+
+summary(Model1b) 
+
+install.packages("lmSupport")
+require(lmSupport) 
+modelEffectSizes(Model1b)
+
+lm(formula = write ~ readc + sch + motc + sch:motc, data = data)
+#the main effect of read is statistically significant (p < .05). 
+#the main effect of read is practically significant. This is because the main effect of read explains 34.6% of the variance in writing exam scores above and beyond all other predictors in the model.
+
+modelCompare(ModelC = Model2, ModelA = Model1b)
+#there is a statistically significant difference between the models (p < .05).  
+#No, there is not a practically significant difference between the models.  The change in R-squared (.00857) is tiny, so the larger model barely explains any additional variance in 
+
