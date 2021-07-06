@@ -40,7 +40,7 @@ dir.create(path = "data")
 dir.create(path = "output")
 
 # Read in data
-comp <- read.csv("C:/Users/ual-laptop/Desktop/css.csv")
+comp <- read.csv("C:/Users/ual-laptop/Desktop/css_3.csv")
 #Change to relative path: comp <- read.csv(file = "data/css_3.csv")
 
 comp$Major <- factor(comp$Major, labels=c("No_DS", "DS"))
