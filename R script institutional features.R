@@ -102,7 +102,7 @@ plot(rfImp)
 # Use Shapley values to measure feature effects
 
 X <- comp[which(names(comp) != "Major")]
-predictor <- Predictor$new(rf.res, data = X, y = css_3$Major, type="prob", class="DS”))
+predictor <- Predictor$new(rf.res, data = X, y = comp$Major, type="prob", class="DS”))
 
 shapley <- Shapley$new(predictor, x.interest = X[1,])
 shapley$plot()
