@@ -3,7 +3,6 @@
 # tmcneil@email.arizona.edu
 # 2021-7-4
 
-
 cl <- makeCluster(detectCores() - 1)
 
 # Create folders
