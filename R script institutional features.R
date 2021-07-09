@@ -3,35 +3,6 @@
 # tmcneil@email.arizona.edu
 # 2021-7-4
 
-install.packages("caret")
-install.packages("randomForest")
-install.packages("mlbench")
-install.packages("parallel")
-install.packages("doParallel")
-install.packages("foreach")
-install.packages("haven")
-install.packages("MASS")
-install.packages("pROC")
-install.packages("party")
-install.packages("dplyr")
-install.packages("ggraph")
-install.packages("igraph")
-install.packages("rpart.plot")
-
-library("caret")
-library("mlbench")
-library("parallel")
-library("doParallel")
-library("foreach")
-library("haven")
-library("MASS")
-library("randomForest")
-library("pROC")
-library("party")
-library("dplyr")
-library("ggraph")
-library("igraph")
-library("rpart.plot")
 
 cl <- makeCluster(detectCores() - 1)
 
@@ -53,6 +24,7 @@ trainIndex <- createDataPartition(comp$Major, p=0.2, list = FALSE, times = 1)
 train <- comp[trainIndex,]
 test <- comp [-trainIndex,]
 
+library("caret")
 #Set control parameters for model training
 fitCtrl <- trainControl(method = "repeatedcv",
                         number = 5,
