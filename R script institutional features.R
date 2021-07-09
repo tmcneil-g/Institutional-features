@@ -4,6 +4,7 @@
 # 2021-7-4
 
 cl <- makeCluster(detectCores() - 1)
+library("parallel")
 
 # Create folders
 dir.create(path = "data")
