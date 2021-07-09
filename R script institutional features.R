@@ -21,10 +21,11 @@ set.seed(1985)
 
 # Create train and test indices
 trainIndex <- createDataPartition(comp$Major, p=0.2, list = FALSE, times = 1)
+library("caret")
 train <- comp[trainIndex,]
 test <- comp [-trainIndex,]
 
-library("caret")
+
 #Set control parameters for model training
 fitCtrl <- trainControl(method = "repeatedcv",
                         number = 5,
@@ -41,8 +42,6 @@ fitCtrl <- trainControl(method = "repeatedcv",
                         ## Use cluster
                         allowParallel = TRUE)
 
-install.packages("e1071")
-library("e1071")
 # Set testing grid for random forest
 rfGrid <-  expand.grid(mtry = 1:6)
 set.seed(1985)
@@ -75,6 +74,7 @@ plot(rfImp)
 
 X <- comp[which(names(comp) != "Major")]
 predictor <- Predictor$new(rf.res, data = X, y = comp$Major, type="prob", class="DS”)
+library("iml")
 
 shapley <- Shapley$new(predictor, x.interest = X[1,])
 shapley$plot()
