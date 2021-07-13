@@ -3,9 +3,10 @@
 # tmcneil@email.arizona.edu
 # 2021-7-4
 
-cl <- makeCluster(detectCores() - 1)
+library("caret")
 library("parallel")
-
+library("iml")
+cl <- makeCluster(detectCores() - 1)
 # Create folders
 dir.create(path = "data")
 dir.create(path = "output")
@@ -21,7 +22,7 @@ set.seed(1985)
 
 # Create train and test indices
 trainIndex <- createDataPartition(comp$Major, p=0.2, list = FALSE, times = 1)
-library("caret")
+
 train <- comp[trainIndex,]
 test <- comp [-trainIndex,]
 
