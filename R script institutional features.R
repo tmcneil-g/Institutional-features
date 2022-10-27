@@ -26,7 +26,6 @@ trainIndex <- createDataPartition(comp$Major, p=0.2, list = FALSE, times = 1)
 train <- comp[trainIndex,]
 test <- comp [-trainIndex,]
 
-
 #Set control parameters for model training
 fitCtrl <- trainControl(method = "repeatedcv",
                         number = 5,
