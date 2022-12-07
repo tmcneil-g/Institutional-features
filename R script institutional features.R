@@ -80,5 +80,5 @@ shapley <- Shapley$new(predictor, x.interest = X[1,])
 shapley$plot()
 shapley$results
 
-##I used Shapley values to predict the effects of age on voting turnout from the random forest. In #this observation, age does not influence the predicted value of the model as the Shapley value is #0.00; age had the 8th/9th smallest contribution in magnitude to the model. 
+##I used Shapley values to predict the effects of  on  from the random forest. In #this observation, does not influence the predicted value of the model as the Shapley value is #0.00;  had the 8th/9th smallest contribution in magnitude to the model. 
 
