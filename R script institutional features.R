@@ -9,7 +9,7 @@ library("iml")
 cl <- makeCluster(detectCores() - 1)
 # Create folders
 dir.create(path = "data")
-dir.create(path = "output")
+dir.create(path = "output",)
 
 # Read in data
 comp <- read.csv("C:/Users/ual-laptop/Desktop/css_3.csv")
