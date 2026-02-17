@@ -12,8 +12,7 @@ dir.create(path = "data")
 dir.create(path = "output")
 
 # Read in data
-comp <- read.csv("C:/Users/ual-laptop/Desktop/css_3.csv")
-#Change to relative path: comp <- read.csv(file = "data/css_3.csv")
+comp <- read.csv(file = "data/css_3.csv")
 
 comp$Major <- factor(comp$Major, labels=c("No_DS", "DS"))
 
@@ -81,4 +80,5 @@ shapley$plot()
 shapley$results
 
 ##I used Shapley values to predict the effects of  on  from the random forest. In #this observation, does not influence the predicted value of the model as the Shapley value is #0.00;  had the 8th/9th smallest contribution in magnitude to the model. 
+
 
