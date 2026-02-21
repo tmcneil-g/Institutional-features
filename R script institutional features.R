@@ -6,14 +6,14 @@
 library("caret")
 library("parallel")
 library("iml")
+
+#
 cl <- makeCluster(detectCores() - 1)
-# Create folders
-dir.create(path = "data")
-dir.create(path = "output")
 
 # Read in data
 comp <- read.csv(file = "data/css_3.csv")
 
+# 
 comp$Major <- factor(comp$Major, labels=c("No_DS", "DS"))
 
 # Split data
@@ -66,8 +66,8 @@ confusionMatrix(predict(rf.res, test, type="raw"), test$Major)
 # Variable importance
 rfImp <- varImp(rf.res)
 plot(rfImp)
-#
-##For the random forest, the training accuracy was ____%, and the testing accuracy was ___%. The three most important features from the random forest were_______. 
+
+## For the random forest, the training accuracy was ____%, and the testing accuracy was ___%. The three most important features from the random forest were_______. 
 
 # Use Shapley values to measure feature effects
 
@@ -79,6 +79,5 @@ shapley <- Shapley$new(predictor, x.interest = X[1,])
 shapley$plot()
 shapley$results
 
-##I used Shapley values to predict the effects of  on  from the random forest. In #this observation, does not influence the predicted value of the model as the Shapley value is #0.00;  had the 8th/9th smallest contribution in magnitude to the model. 
-
-
+## I used Shapley values to predict the effects of  on  from the random forest. In #this observation, 
+## does not influence the predicted value of the model as the Shapley value is #0.00;  had the 8th/9th smallest contribution in magnitude to the model. 
