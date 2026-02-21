@@ -7,7 +7,7 @@ library("caret")
 library("parallel")
 library("iml")
 
-#
+# Convention to leave 1 core for OS
 cl <- makeCluster(detectCores() - 1)
 
 # Read in data
@@ -53,15 +53,15 @@ rf.res <- train(Major ~ .,
                 metric="ROC",
                 verbose=FALSE)
 rf.res
-#Random Forest 
+
+# Random Forest 
 # Extract predictions
 confusionMatrix(predict(rf.res, train, type="raw"), train$Major)
-#
-#Confusion Matrix and Statistics
-#
+
+# Confusion Matrix and Statistics
 confusionMatrix(predict(rf.res, test, type="raw"), test$Major)
-#
-#Confusion Matrix and Statistics
+
+# Confusion Matrix and Statistics
 
 # Variable importance
 rfImp <- varImp(rf.res)
