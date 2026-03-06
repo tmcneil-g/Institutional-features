@@ -1,0 +1,17 @@
+# Logistic regression for presence of undergraduate data science major
+
+library("stats")
+library("car")
+
+# Read data
+institutional_data <- read.csv(file = "data/institutional_data.csv")
+
+# Run logistic regression
+model_all <- glm(y ~ x1 + x2 + x3, 
+          data = institutional_data, 
+          family = binomial
+
+vif(model_all)
+
+summary(model_all)
+exp(coef(model_all))
