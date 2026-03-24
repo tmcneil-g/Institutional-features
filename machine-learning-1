@@ -1,0 +1,114 @@
+# Machine learning of institutional variables
+# Torbet McNeil
+# tmcneil@email.arizona.edu
+# 2026-3-23
+
+install.packages("caret")
+install.packages("parallel")
+install.packages("iml")
+
+library("caret")
+library("parallel")
+library("iml")
+
+cl <- makeCluster(detectCores() - 1)
+# Create folders
+dir.create(path = "data")
+dir.create(path = "output")
+
+# Read in data
+institutional_data <- read.csv("C:/Users/ual-laptop/Desktop/institutional_data_1.csv")
+
+# Convert variables in dataset into categorical (factor) variables
+institutional_data$liberal_arts <- factor(institutional_data$liberal_arts)
+institutional_data$r1 <- factor(institutional_data$r1)
+institutional_data$r2 <- factor(institutional_data$r2)
+institutional_data$ds_program <- factor(institutional_data$ds_program)
+institutional_data$public_private <- factor(institutional_data$public_private)
+institutional_data$size <- factor(institutional_data$size)
+institutional_data$land_grant <- factor(institutional_data$land_grant)
+institutional_data$access_earnings <- factor(institutional_data$access_earnings)
+
+# Center continuous independent variables and add as new variables
+institutional_data$average_salary_c <- 
+  scale(institutional_data$average_salary, 
+        center = TRUE, scale = FALSE)
+institutional_data$fte_staff_c <- 
+  scale(institutional_data$fte_staff, 
+        center = TRUE, scale = FALSE)
+institutional_data$endowment_c <- 
+  scale(institutional_data$endowment, 
+        center = TRUE, scale = FALSE)
+institutional_data$core_expenses_c <- 
+  scale(institutional_data$core_expenses, 
+        center = TRUE, scale = FALSE)
+institutional_data$ endowment_per_fte_c <- 
+  scale(institutional_data$endowment_per_fte , 
+        center = TRUE, scale = FALSE)
+
+# Split data
+set.seed(1985)
+
+# Create train and test indices
+trainIndex <- createDataPartition(institutional_data$ds_program, p=0.2, list = FALSE, times = 1)
+
+train <- comp[trainIndex,]
+test <- comp [-trainIndex,]
+
+#Set control parameters for model training
+fitCtrl <- trainControl(method = "repeatedcv",
+                        number = 5,
+                        repeats = 2,
+                        summaryFunction=twoClassSummary,
+                        ## Estimate class probabilities
+                        classProbs = TRUE,
+                        ## returnData = TRUE,
+                        savePredictions = TRUE,
+                        ## Search "grid" or "random"
+                        search = "random",
+                        ## Down-sampling
+                        sampling = "down",
+                        ## Use cluster
+                        allowParallel = TRUE)
+
+# Set testing grid for random forest
+rfGrid <-  expand.grid(mtry = 1:6)
+set.seed(1985)
+
+rf.res <- train(ds_program ~ .,
+                data=train,
+                method="rf",
+                trControl=fitCtrl,
+                tuneGrid=rfGrid,
+                #tuneLength=10,
+                metric="ROC",
+                verbose=FALSE)
+
+rf.res
+
+#Random Forest 
+# Extract predictions
+confusionMatrix(predict(rf.res, train, type="raw"), train$ds_program)
+#
+#Confusion Matrix and Statistics
+#
+confusionMatrix(predict(rf.res, test, type="raw"), test$ds_program)
+#
+#Confusion Matrix and Statistics
+
+# Variable importance
+rfImp <- varImp(rf.res)
+plot(rfImp)
+
+#
+
+##For the random forest, the training accuracy was ____%, and the testing accuracy was ___%. The three most important features from the random forest were_______. 
+
+# Use Shapley values to measure feature effects
+X <- comp[which(names(comp) != "ds_program")]
+predictor <- Predictor$new(rf.res, data = X, y = institutional_data$ds_program, type="prob", class="DS")
+library("iml")
+
+shapley <- Shapley$new(predictor, x.interest = X[1,])
+shapley$plot()
+shapley$results
