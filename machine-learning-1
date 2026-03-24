@@ -8,7 +8,9 @@ library("parallel")
 library("iml")
 library(randomForest)
 
+# Convention to leave 1 core for OS
 cl <- makeCluster(detectCores() - 1)
+
 # Create folders
 dir.create(path = "data")
 dir.create(path = "output")
@@ -44,16 +46,11 @@ institutional_data$endowment_per_fte_c <-
   scale(institutional_data$endowment_per_fte, 
         center = TRUE, scale = TRUE)
 
-institutional_data$fte_staff_c <- 
-  scale(institutional_data$fte_staff, 
-        center = TRUE, scale = TRUE)
-
 # Split data
 set.seed(1985)
-
-# Create train and test indices
 trainIndex <- createDataPartition(institutional_data$ds_program, p=0.2, list = FALSE, times = 1)
 
+# Create train and test indices
 train <- institutional_data[trainIndex,]
 test <- institutional_data[-trainIndex,]
 
@@ -74,17 +71,23 @@ fitCtrl <- trainControl(method = "repeatedcv",
                         allowParallel = TRUE)
 
 # Set testing grid for random forest
-rfGrid <-  expand.grid(mtry = 1:6)
-set.seed(1985)
+rfGrid <- expand.grid(mtry = 1:6)
+
+# Random forest
+rf.res <- train(ds_program ~ .,
+    data=train,
+    method="rf",
+    trControl=fitCtrl,
+    tuneGrid=rfGrid,
+    metric="Accuracy",
+    verbose=FALSE)
 
 rf.res
 
-#Random Forest 
 # Extract predictions
 confusionMatrix(predict(rf.res, train, type="raw"), train$ds_program)
 
 confusionMatrix(predict(rf.res, test, type="raw"), test$ds_program)
-#
 
 # Variable importance
 rfImp <- varImp(rf.res)
