@@ -22,10 +22,10 @@ institutional_data$r1 <- factor(institutional_data$r1)
 institutional_data$r2 <- factor(institutional_data$r2)
 institutional_data$ds_program <- factor(institutional_data$ds_program, labels=c("DS", "No_DS"))
 institutional_data$public_private <- factor(institutional_data$public_private)
-institutional_data$size <- factor(institutional_data$size), ordered = TRUE
+institutional_data$size <- factor(institutional_data$size, ordered = TRUE)
 institutional_data$land_grant <- factor(institutional_data$land_grant)
-institutional_data$access_earnings <- factor(institutional_data$access_earnings), ordered = TRUE
-institutional_data$barron_rank <- factor(institutional_data$barron_rank), ordered = TRUE
+institutional_data$access_earnings <- factor(institutional_data$access_earnings, ordered = TRUE)
+institutional_data$barron_rank <- factor(institutional_data$barron_rank, ordered = TRUE)
 
 # Center continuous independent variables and add as new variables
 institutional_data$average_salary_c <- 
