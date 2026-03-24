@@ -1,7 +1,7 @@
 # Logistic regression for presence of undergraduate data science major
 
 library("stats")
-library("car")
+library(car)
 
 # Read data
 institutional_data <- read.csv(file = "data/institutional_data_1.csv")
