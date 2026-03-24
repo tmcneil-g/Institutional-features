@@ -30,7 +30,7 @@ model_all <- glm(ds_program ~ liberal_arts + r1 + r2 + barron_rank + public_priv
           endowment_per_fte_c + equity_ratio + core_expenses_c + endowment_c + 
           fte_staff_c + average_salary_c, 
           data = institutional_data, 
-          family = binomial
+          family = binomial)
 
 vif(model_all)
 
