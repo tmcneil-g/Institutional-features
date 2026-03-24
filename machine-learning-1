@@ -10,6 +10,7 @@ install.packages("iml")
 library("caret")
 library("parallel")
 library("iml")
+library(randomForest)
 
 cl <- makeCluster(detectCores() - 1)
 # Create folders
@@ -23,7 +24,7 @@ institutional_data <- read.csv("C:/Users/ual-laptop/Desktop/institutional_data_1
 institutional_data$liberal_arts <- factor(institutional_data$liberal_arts)
 institutional_data$r1 <- factor(institutional_data$r1)
 institutional_data$r2 <- factor(institutional_data$r2)
-institutional_data$ds_program <- factor(institutional_data$ds_program)
+institutional_data$ds_program <- factor(institutional_data$ds_program, labels=c("DS", "No_DS"))
 institutional_data$public_private <- factor(institutional_data$public_private)
 institutional_data$size <- factor(institutional_data$size)
 institutional_data$land_grant <- factor(institutional_data$land_grant)
@@ -52,8 +53,8 @@ set.seed(1985)
 # Create train and test indices
 trainIndex <- createDataPartition(institutional_data$ds_program, p=0.2, list = FALSE, times = 1)
 
-train <- comp[trainIndex,]
-test <- comp [-trainIndex,]
+train <- institutional_data[trainIndex,]
+test <- institutional_data[-trainIndex,]
 
 #Set control parameters for model training
 fitCtrl <- trainControl(method = "repeatedcv",
@@ -75,26 +76,14 @@ fitCtrl <- trainControl(method = "repeatedcv",
 rfGrid <-  expand.grid(mtry = 1:6)
 set.seed(1985)
 
-rf.res <- train(ds_program ~ .,
-                data=train,
-                method="rf",
-                trControl=fitCtrl,
-                tuneGrid=rfGrid,
-                #tuneLength=10,
-                metric="ROC",
-                verbose=FALSE)
-
 rf.res
 
 #Random Forest 
 # Extract predictions
 confusionMatrix(predict(rf.res, train, type="raw"), train$ds_program)
-#
-#Confusion Matrix and Statistics
-#
+
 confusionMatrix(predict(rf.res, test, type="raw"), test$ds_program)
 #
-#Confusion Matrix and Statistics
 
 # Variable importance
 rfImp <- varImp(rf.res)
