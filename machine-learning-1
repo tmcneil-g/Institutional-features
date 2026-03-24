@@ -3,10 +3,6 @@
 # tmcneil@email.arizona.edu
 # 2026-3-23
 
-install.packages("caret")
-install.packages("parallel")
-install.packages("iml")
-
 library("caret")
 library("parallel")
 library("iml")
