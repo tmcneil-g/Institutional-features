@@ -14,7 +14,7 @@ dir.create(path = "data")
 dir.create(path = "output")
 
 # Read in data
-institutional_data <- read.csv("C:/Users/ual-laptop/Desktop/institutional_data_1.csv")
+institutional_data <- read.csv("C:/Users/ual-laptop/Desktop/institutional_data_2.csv")
 
 # Convert variables in dataset into categorical (factor) variables
 institutional_data$liberal_arts <- factor(institutional_data$liberal_arts)
@@ -25,23 +25,28 @@ institutional_data$public_private <- factor(institutional_data$public_private)
 institutional_data$size <- factor(institutional_data$size)
 institutional_data$land_grant <- factor(institutional_data$land_grant)
 institutional_data$access_earnings <- factor(institutional_data$access_earnings)
+institutional_data$barron_rank <- factor(institutional_data$barron_rank)
 
 # Center continuous independent variables and add as new variables
 institutional_data$average_salary_c <- 
   scale(institutional_data$average_salary, 
-        center = TRUE, scale = FALSE)
+        center = TRUE, scale = TRUE)
 institutional_data$fte_staff_c <- 
   scale(institutional_data$fte_staff, 
-        center = TRUE, scale = FALSE)
+        center = TRUE, scale = TRUE)
 institutional_data$endowment_c <- 
   scale(institutional_data$endowment, 
-        center = TRUE, scale = FALSE)
+        center = TRUE, scale = TRUE)
 institutional_data$core_expenses_c <- 
   scale(institutional_data$core_expenses, 
-        center = TRUE, scale = FALSE)
-institutional_data$ endowment_per_fte_c <- 
-  scale(institutional_data$endowment_per_fte , 
-        center = TRUE, scale = FALSE)
+        center = TRUE, scale = TRUE)
+institutional_data$endowment_per_fte_c <- 
+  scale(institutional_data$endowment_per_fte, 
+        center = TRUE, scale = TRUE)
+
+institutional_data$fte_staff_c <- 
+  scale(institutional_data$fte_staff, 
+        center = TRUE, scale = TRUE)
 
 # Split data
 set.seed(1985)
