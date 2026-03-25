@@ -12,10 +12,6 @@ library(dplyr)
 # Convention to leave 1 core for OS
 cl <- makeCluster(detectCores() - 1)
 
-# Create folders
-dir.create(path = "data")
-dir.create(path = "output")
-
 # Read in data
 institutional_data <- read.csv(file = "data/institutional_data_3.csv")
 
