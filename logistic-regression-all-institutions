@@ -5,7 +5,7 @@ library(car)
 library(dplyr)
 
 # Read data
-institutional_data <- read.csv(file = "data/institutional_data_3.csv")
+institutional_data <- read.csv(file = "data/institutional_data_all.csv")
 
 # Drop rows with missing data
 institutional_data <- institutional_data %>%
