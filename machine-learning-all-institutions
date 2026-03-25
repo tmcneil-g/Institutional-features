@@ -13,7 +13,7 @@ library(dplyr)
 cl <- makeCluster(detectCores() - 1)
 
 # Read in data
-institutional_data <- read.csv(file = "data/institutional_data_3.csv")
+institutional_data <- read.csv(file = "data/institutional_data_all.csv")
 
 # Drop rows with missing data
 institutional_data <- institutional_data %>%
