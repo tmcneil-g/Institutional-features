@@ -44,7 +44,8 @@ institutional_data$endowment <- scale(institutional_data$endowment,
         center = TRUE, scale = TRUE)
 institutional_data$core_expenses <- scale(institutional_data$core_expenses, 
         center = TRUE, scale = TRUE)
-institutional_data$endowment_per_fte <- scale(institutional_data$endowment_per_fte, 
+institutional_data$endowment_per_fte <- 
+        scale(institutional_data$endowment_per_fte, 
         center = TRUE, scale = TRUE)
 institutional_data$admitted <- scale(institutional_data$admitted, 
         center = TRUE, scale = TRUE)
