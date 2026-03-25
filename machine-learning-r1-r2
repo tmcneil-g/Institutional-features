@@ -1,0 +1,120 @@
+# Machine learning of institutional variables for R1 and R2 institutions
+# Torbet McNeil
+# tmcneil@email.arizona.edu
+# 2026-3-23
+
+library("caret")
+library("parallel")
+library("iml")
+library(randomForest)
+library(dplyr)
+
+# Convention to leave 1 core for OS
+cl <- makeCluster(detectCores() - 1)
+
+# Read in data
+institutional_data <- read.csv(file = "data/institutional_r1_r2.csv")
+
+# Drop rows with missing data
+institutional_data <- institutional_data %>%
+  filter(access_earnings > 0)
+
+# Drop rows with missing data again
+institutional_data <- na.omit(institutional_data)
+
+# Convert variables in dataset into categorical (factor) variables
+institutional_data$type <- factor(institutional_data$type)
+institutional_data$ds_program <- factor(institutional_data$ds_program, labels=c("DS", "No_DS"))
+institutional_data$public_private <- factor(institutional_data$public_private)
+institutional_data$size <- factor(institutional_data$size, ordered = TRUE)
+institutional_data$land_grant <- factor(institutional_data$land_grant)
+institutional_data$access_earnings <- factor(institutional_data$access_earnings, ordered = TRUE)
+
+# Center continuous independent variables
+institutional_data$average_salary <- scale(institutional_data$average_salary, 
+                                           center = TRUE, scale = TRUE)
+institutional_data$fte_staff <- scale(institutional_data$fte_staff, 
+                                      center = TRUE, scale = TRUE)
+institutional_data$endowment <- scale(institutional_data$endowment, 
+                                      center = TRUE, scale = TRUE)
+institutional_data$core_expenses <- scale(institutional_data$core_expenses, 
+                                          center = TRUE, scale = TRUE)
+institutional_data$endowment_per_fte <- 
+  scale(institutional_data$endowment_per_fte, 
+        center = TRUE, scale = TRUE)
+institutional_data$admitted <- scale(institutional_data$admitted, 
+                                     center = TRUE, scale = TRUE)
+institutional_data$women <- scale(institutional_data$women, 
+                                  center = TRUE, scale = TRUE)
+institutional_data$international <- scale(institutional_data$international, 
+                                          center = TRUE, scale = TRUE)
+institutional_data$white <- scale(institutional_data$white, 
+                                  center = TRUE, scale = TRUE)
+institutional_data$hispanic <- scale(institutional_data$hispanic, 
+                                     center = TRUE, scale = TRUE)
+institutional_data$black <- scale(institutional_data$black, 
+                                  center = TRUE, scale = TRUE)
+institutional_data$asian <- scale(institutional_data$asian, 
+                                  center = TRUE, scale = TRUE)
+institutional_data$undergrad_enrollment_ft <- 
+  scale(institutional_data$undergrad_enrollment_ft, 
+        center = TRUE, scale = TRUE)
+institutional_data$graduation <- scale(institutional_data$graduation, 
+                                       center = TRUE, scale = TRUE)
+institutional_data$graduation <- scale(institutional_data$graduation, 
+                                       center = TRUE, scale = TRUE)
+institutional_data$equity_ratio <- scale(institutional_data$equity_ratio, 
+                                         center = TRUE, scale = TRUE)
+institutional_data$barron_rank <- scale(institutional_data$barron_rank, 
+                                        center = TRUE, scale = TRUE)
+
+# Split data
+set.seed(1985)
+trainIndex <- createDataPartition(institutional_data$ds_program, p=0.8, list = FALSE, times = 1)
+
+# Remove institution column
+institutional_data <- institutional_data %>%
+  select(-institution)
+
+# Create train and test indices
+train <- institutional_data[trainIndex,]
+test <- institutional_data[-trainIndex,]
+
+#Set control parameters for model training
+fitCtrl <- trainControl(method = "repeatedcv",
+                        number = 5,
+                        repeats = 2,
+                        summaryFunction=twoClassSummary,
+                        ## Estimate class probabilities
+                        classProbs = TRUE,
+                        ## returnData = TRUE,
+                        savePredictions = TRUE,
+                        ## Search "grid" or "random"
+                        search = "random",
+                        ## Down-sampling
+                        sampling = "down",
+                        ## Use cluster
+                        allowParallel = TRUE)
+
+# Set testing grid for random forest
+rfGrid <- expand.grid(mtry = 1:6)
+
+# Random forest
+rf.res <- train(ds_program ~ .,
+                data=train,
+                method="rf",
+                trControl=fitCtrl,
+                tuneGrid=rfGrid,
+                metric="Accuracy",
+                verbose=FALSE)
+
+rf.res
+
+# Extract predictions
+confusionMatrix(predict(rf.res, train, type="raw"), train$ds_program)
+
+confusionMatrix(predict(rf.res, test, type="raw"), test$ds_program)
+
+# Variable importance
+rfImp <- varImp(rf.res)
+plot(rfImp)
