@@ -51,8 +51,8 @@ institutional_data$black <- scale(institutional_data$black,
 institutional_data$asian <- scale(institutional_data$asian, 
                             center = TRUE, scale = TRUE)
 institutional_data$undergrad_enrollment_ft <- 
-        scale(institutional_data$undergrad_enrollment_ft, 
-        center = TRUE, scale = TRUE)
+  scale(institutional_data$undergrad_enrollment_ft, 
+  center = TRUE, scale = TRUE)
 institutional_data$graduation <- scale(institutional_data$graduation, 
                                  center = TRUE, scale = TRUE)
 institutional_data$graduation <- scale(institutional_data$graduation, 
