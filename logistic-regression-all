@@ -1,6 +1,6 @@
 # Logistic regression for presence of undergraduate data science major
 
-library("stats")
+library(stats)
 library(car)
 
 # Read data
