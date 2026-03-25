@@ -66,8 +66,6 @@ institutional_data$equity_ratio <- scale(institutional_data$equity_ratio,
                                    center = TRUE, scale = TRUE)
 institutional_data$equity_ratio <- scale(institutional_data$equity_ratio, 
                                    center = TRUE, scale = TRUE)
-institutional_data$barron_rank <- scale(institutional_data$barron_rank, 
-                                  center = TRUE, scale = TRUE)
 
 # Split data
 set.seed(1985)
