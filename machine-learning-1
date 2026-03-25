@@ -35,7 +35,7 @@ institutional_data$land_grant <- factor(institutional_data$land_grant)
 institutional_data$access_earnings <- factor(institutional_data$access_earnings, ordered = TRUE)
 institutional_data$barron_rank <- factor(institutional_data$barron_rank, ordered = TRUE)
 
-# Center continuous independent variables and add as new variables
+# Center continuous independent variables
 institutional_data$average_salary <- 
   scale(institutional_data$average_salary, 
         center = TRUE, scale = TRUE)
