@@ -14,7 +14,7 @@ institutional_data <- institutional_data %>%
 # Drop rows with missing data again
 institutional_data <- na.omit(institutional_data)
 
-# Convert variables in dataset into categorical (factor) variables
+# Convert variables into categorical (factor) variables
 institutional_data$type <- factor(institutional_data$type)
 institutional_data$ds_program <- factor(institutional_data$ds_program, 
         labels=c("DS", "No_DS"))
@@ -23,7 +23,7 @@ institutional_data$size <- factor(institutional_data$size, ordered = TRUE)
 institutional_data$land_grant <- factor(institutional_data$land_grant)
 institutional_data$access_earnings <- factor(institutional_data$access_earnings, ordered = TRUE)
 
-# Center continuous independent variables
+# Center and scale continuous independent variables
 institutional_data$average_salary <- scale(institutional_data$average_salary, 
                                      center = TRUE, scale = TRUE)
 institutional_data$fte_staff <- scale(institutional_data$fte_staff, 
