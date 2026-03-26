@@ -48,7 +48,7 @@ institutional_data$undergrad_enrollment_ft <-
 institutional_data$graduation <- scale(institutional_data$graduation, 
                                  center = TRUE, scale = TRUE)
 institutional_data$usnews_rank <- scale(institutional_data$usnews_rank, 
-                                  center = TRUE, scael = TRUE)
+                                  center = TRUE, scale = TRUE)
 
 # Run logistic regression
 model_all <- glm(ds_program ~ usnews_rank + public_private + size + 
