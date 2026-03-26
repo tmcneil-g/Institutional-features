@@ -7,10 +7,6 @@ library(dplyr)
 # Read data
 institutional_data <- read.csv(file = "data/liberal_arts_2.csv")
 
-# Drop rows with missing data
-institutional_data <- institutional_data %>%
-  filter(access_earnings > 0)
-
 # Drop rows with missing data again
 institutional_data <- na.omit(institutional_data)
 
