@@ -1,4 +1,4 @@
-institution,ds_program,barron_rank,public_private,size,land_grant,admitted,women,international,white,hispanic,black,asian,undergrad_enrollment_ft,graduation,equity_ratio,core_expenses,endowment,fte_staff
+institution,ds_program,usnews_rank,public_private,size,land_grant,admitted,women,international,white,hispanic,black,asian,undergrad_enrollment_ft,graduation,equity_ratio,core_expenses,endowment,fte_staff
 Agnes Scott College,1,67,2,2,2,62,100,3,39,13,31,4,923,71,80,50495078,236894913,292.99
 Albion College,0,131,2,2,2,81,54,4,52,12,17,1,1366,62,70,54935609,144138966,373.33
 Albright College,1,170,2,2,2,76,55,2,44,21,22,3,1299,51,32,50830000,53032000,255.33
