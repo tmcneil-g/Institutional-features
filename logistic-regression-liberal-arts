@@ -1,0 +1,64 @@
+# Logistic regression for presence of undergraduate data science major at liberal arts institutions
+
+library(stats)
+library(car)
+library(dplyr)
+
+# Read data
+institutional_data <- read.csv(file = "data/liberal_arts_2.csv")
+
+# Drop rows with missing data
+institutional_data <- institutional_data %>%
+  filter(access_earnings > 0)
+
+# Drop rows with missing data again
+institutional_data <- na.omit(institutional_data)
+
+# Convert variables into categorical (factor) variables
+institutional_data$ds_program <- factor(institutional_data$ds_program, 
+        labels=c("DS", "No_DS"))
+institutional_data$public_private <- factor(institutional_data$public_private)
+institutional_data$size <- factor(institutional_data$size, ordered = TRUE)
+institutional_data$land_grant <- factor(institutional_data$land_grant)
+
+# Center and scale continuous independent variables
+institutional_data$fte_staff <- scale(institutional_data$fte_staff, 
+                                center = TRUE, scale = TRUE)
+institutional_data$endowment <- scale(institutional_data$endowment, 
+                                center = TRUE, scale = TRUE)
+institutional_data$core_expenses <- scale(institutional_data$core_expenses, 
+                                    center = TRUE, scale = TRUE)
+institutional_data$admitted <- scale(institutional_data$admitted, 
+                               center = TRUE, scale = TRUE)
+institutional_data$women <- scale(institutional_data$women, 
+                            center = TRUE, scale = TRUE)
+institutional_data$international <- scale(institutional_data$international, 
+                                    center = TRUE, scale = TRUE)
+institutional_data$white <- scale(institutional_data$white, 
+                            center = TRUE, scale = TRUE)
+institutional_data$hispanic <- scale(institutional_data$hispanic, 
+                               center = TRUE, scale = TRUE)
+institutional_data$black <- scale(institutional_data$black, 
+                            center = TRUE, scale = TRUE)
+institutional_data$asian <- scale(institutional_data$asian, 
+                            center = TRUE, scale = TRUE)
+institutional_data$undergrad_enrollment_ft <- 
+  scale(institutional_data$undergrad_enrollment_ft, 
+  center = TRUE, scale = TRUE)
+institutional_data$graduation <- scale(institutional_data$graduation, 
+                                 center = TRUE, scale = TRUE)
+institutional_data$usnews_rank <- scale(institutional_data$usnews_rank, 
+                                  center = TRUE, scael = TRUE)
+
+# Run logistic regression
+model_all <- glm(ds_program ~ usnews_rank + public_private + size + 
+                land_grant + admitted + women + international + 
+                hispanic + black + asian + white + undergrad_enrollment_ft + graduation +
+                equity_ratio + core_expenses + endowment + fte_staff, 
+                data = institutional_data, 
+                family = binomial)
+
+vif(model_all)
+
+summary(model_all)
+exp(coef(model_all))
