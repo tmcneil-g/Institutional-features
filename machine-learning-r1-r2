@@ -67,6 +67,12 @@ institutional_data$equity_ratio <- scale(institutional_data$equity_ratio,
                                          center = TRUE, scale = TRUE)
 institutional_data$usnews_rank <- scale(institutional_data$usnews_rank, 
                                         center = TRUE, scale = TRUE)
+institutional_data$retention <- scale(institutional_data$retention, 
+                                   center = TRUE, scale = TRUE)
+institutional_data$pell <- scale(institutional_data$pell, 
+                                   center = TRUE, scale = TRUE)
+institutional_data$awarded_aid <- scale(institutional_data$awarded_aid, 
+                                   center = TRUE, scale = TRUE)
 
 # Split data
 set.seed(1985)
