@@ -23,7 +23,7 @@ institutional_data$ds_program <- factor(institutional_data$ds_program, labels=c(
 institutional_data$public_private <- factor(institutional_data$public_private)
 institutional_data$size <- factor(institutional_data$size, ordered = TRUE)
 
-# Center continuous independent variables
+# Center and scale continuous independent variables
 institutional_data$fte_staff <- scale(institutional_data$fte_staff, 
                                       center = TRUE, scale = TRUE)
 institutional_data$endowment <- scale(institutional_data$endowment, 
