@@ -87,11 +87,11 @@ trainIndex <- createDataPartition(institutional_data$ds_program, p=0.8, list = F
 institutional_data <- institutional_data %>%
   select(-institution)
 
-# Create train and test indices
+# Create train and test indices for random forest
 train <- institutional_data[trainIndex,]
 test <- institutional_data[-trainIndex,]
 
-#Set control parameters for model training
+#Set control parameters for model training for random forest
 fitCtrl <- trainControl(method = "repeatedcv",
                         number = 5,
                         repeats = 2,
@@ -121,7 +121,7 @@ rf.res <- train(ds_program ~ .,
 
 rf.res
 
-# Extract predictions
+# Extract predictions for random forest
 confusionMatrix(predict(rf.res, train, type="raw"), train$ds_program)
 
 confusionMatrix(predict(rf.res, test, type="raw"), test$ds_program)
@@ -130,6 +130,7 @@ confusionMatrix(predict(rf.res, test, type="raw"), test$ds_program)
 rfImp <- varImp(rf.res)
 plot(rfImp)
 
+# Gradient boosting machine
 # Set control parameters for model training for gradient boosting machine
 gbmGrid <-  expand.grid(n.trees = c(1:20)*100,
                         interaction.depth=c(2,3),
@@ -138,7 +139,7 @@ gbmGrid <-  expand.grid(n.trees = c(1:20)*100,
 
 # Estimate gradient boosting machine model
 set.seed(1985)
-gbm.res <- train(voted2016 ~ .,
+gbm.res <- train(ds_program ~ .,
     data=train,
     method="gbm",
     trControl=fitCtrl,
@@ -148,9 +149,9 @@ gbm.res <- train(voted2016 ~ .,
 #
 gbm.res
 
-# Extract predictions (gbm)
-confusionMatrix(predict(gbm.res, train, type="raw"), train$voted2016)
-confusionMatrix(predict(gbm.res, test, type="raw"), test$voted2016)
+# Extract predictions for gradient boosting machine
+confusionMatrix(predict(gbm.res, train, type="raw"), train$ds_program)
+confusionMatrix(predict(gbm.res, test, type="raw"), test$ds_program)
 
 # Variable importance for gradient boosting machine 
 gbmImp <- varImp(gbm.res)
