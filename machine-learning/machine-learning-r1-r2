@@ -9,6 +9,9 @@ library(parallel)
 library(iml)
 library(randomForest)
 library(dplyr)
+library(gbm)
+library(quadprog)
+library(nnet)
 
 # Convention to leave 1 core for OS
 cl <- makeCluster(detectCores() - 1)
