@@ -1,11 +1,11 @@
 Variable,Definition
 Data Science Major,"Categorical variable: 0=institution has a major in data science, 1=institution does not have a major in data science "
 Type of Institution,"Categorical variable: 0=R1 institution, 1=R2 institution, 2=liberal arts institution, 2025-2026"
-Barron’s Ranking,"Categorical variable of ranking as reported in Barron's Profiles of American Colleges 2019: 1=most competitive, 2=highly competitive plus, 3=highly competitive, 4=very competitive plus, 5=very competitive, 6=competitive plus, 7=competitive, 8=less competitive, 9=non-competitive"
+Barronâ€™s Ranking,"Categorical variable of ranking as reported in Barron's Profiles of American Colleges 2019: 1=most competitive, 2=highly competitive plus, 3=highly competitive, 4=very competitive plus, 5=very competitive, 6=competitive plus, 7=competitive, 8=less competitive, 9=non-competitive"
 U.S. News and World Report Ranking,Continuous variable of ranking as reported by U.S. News and World Report 2026
 Control of Institution,"Categorical variable: 1=public, 2=private, 2024-25"
 Size,"Categorical variable of Carnegie Classification 2025 for institutional size: 1=very small, 2=small, 3=medium, 4=large, 5=very large, 2024-25"
-Admitted,"Percent admitted—total, 2024-25"
+Admitted,"Percent admittedâ€”total, 2024-25"
 Retention,"Full-time retention rate, 2024"
 Undergraduate Enrollment,"Full-time undergraduate 12-month unduplicated headcount, 2023-24"
 Land Grant Institution,"Categorical variable: 1=land grant, 2=not land grant, 2024-25"
@@ -15,8 +15,6 @@ Black,"Percent of undergraduate 12-month unduplicated headcount that are Black o
 White,"Percent of undergraduate 12-month unduplicated headcount that are White, 2023-2024"
 Asian,"Percent of undergraduate 12-month unduplicated headcount that are Asian, 2023-2024"
 International,"Percent of undergraduate 12-month unduplicated headcount that is U.S. nonresident, 2023-2024"
-,
-,
 Graduation Rate,"Graduation rate, total cohort, August 31, 2024"
 Pell,"Percent of full-time first-time undergraduates awarded Pell grants, 2023-24"
 Awarded Aid,"Percent of full-time first-time undergraduates awarded any financial aid, 2023-24"
