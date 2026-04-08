@@ -105,3 +105,30 @@ confusionMatrix(predict(rf.res, test, type="raw"), test$ds_program)
 # Variable importance
 rfImp <- varImp(rf.res)
 plot(rfImp)
+
+# Gradient boosting machine
+# Set control parameters for model training for gradient boosting machine
+gbmGrid <-  expand.grid(n.trees = c(1:20)*100,
+                        interaction.depth=c(2,3),
+                        shrinkage = c(0.01, 0.05),
+                        n.minobsinnode=c(5,10))
+
+# Estimate gradient boosting machine model
+set.seed(1985)
+gbm.res <- train(ds_program ~ .,
+    data=train,
+    method="gbm",
+    trControl=fitCtrl,
+    tuneGrid=gbmGrid,
+    metric="Accuracy",
+    verbose=FALSE)
+#
+gbm.res
+
+# Extract predictions for gradient boosting machine
+confusionMatrix(predict(gbm.res, train, type="raw"), train$ds_program)
+confusionMatrix(predict(gbm.res, test, type="raw"), test$ds_program)
+
+# Variable importance for gradient boosting machine 
+gbmImp <- varImp(gbm.res)
+plot(gbmImp)
