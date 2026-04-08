@@ -57,3 +57,12 @@ vif(model_all)
 
 summary(model_all)
 exp(coef(model_all))
+
+# Get significance of the overall model
+with(model_all, null.deviance - deviance)
+
+# Get the degrees of freedom for the difference between the two models 
+with(model_all, df.null - df.residual)
+
+# Get p-value
+with(model_all, pchisq(null.deviance - deviance, df.null - df.residual, lower.tail = FALSE))
