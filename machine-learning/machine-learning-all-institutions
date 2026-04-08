@@ -8,6 +8,9 @@ library(parallel)
 library(iml)
 library(randomForest)
 library(dplyr)
+library(gbm)
+library(quadprog)
+library(nnet)
 
 # Convention to leave 1 core for OS
 cl <- makeCluster(detectCores() - 1)
@@ -123,16 +126,32 @@ confusionMatrix(predict(rf.res, train, type="raw"), train$ds_program)
 
 confusionMatrix(predict(rf.res, test, type="raw"), test$ds_program)
 
-# Variable importance
+# Variable importance for random forest
 rfImp <- varImp(rf.res)
 plot(rfImp)
 
-##For the random forest, the training accuracy was ____%, and the testing accuracy was ___%. The three most important features from the random forest were_______. 
-# Use Shapley values to measure feature effects
-X <- comp[which(names(comp) != "ds_program")]
-predictor <- Predictor$new(rf.res, data = X, y = institutional_data$ds_program, type="prob", class="DS")
-library("iml")
+# Set control parameters for model training for gradient boosting machine
+gbmGrid <-  expand.grid(n.trees = c(1:20)*100,
+                        interaction.depth=c(2,3),
+                        shrinkage = c(0.01, 0.05),
+                        n.minobsinnode=c(5,10))
 
-shapley <- Shapley$new(predictor, x.interest = X[1,])
-shapley$plot()
-shapley$results
+# Estimate gradient boosting machine model
+set.seed(1985)
+gbm.res <- train(voted2016 ~ .,
+    data=train,
+    method="gbm",
+    trControl=fitCtrl,
+    tuneGrid=gbmGrid,
+    metric="Accuracy",
+    verbose=FALSE)
+#
+gbm.res
+
+# Extract predictions (gbm)
+confusionMatrix(predict(gbm.res, train, type="raw"), train$voted2016)
+confusionMatrix(predict(gbm.res, test, type="raw"), test$voted2016)
+
+# Variable importance for gradient boosting machine 
+gbmImp <- varImp(gbm.res)
+plot(gbmImp)
