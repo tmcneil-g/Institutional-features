@@ -78,6 +78,55 @@ model_all <- glm(ds_program ~ type + barron_rank + public_private + size +
 #Check VIF values
 vif(model_all)
 
+# Test whether categorical variables (with 3+ levels) are significant overall 
+# Fit the reduced model (removes the categorical variable "type")
+model_reduced <- glm(ds_program ~ barron_rank + public_private + size + 
+          land_grant + access_earnings + admitted + women + international + 
+          hispanic + black + asian + white + undergrad_enrollment_ft + graduation +
+          endowment_per_fte + equity_ratio + core_expenses + endowment + 
+          fte_staff + average_salary + retention + pell + awarded_aid, 
+          data = institutional_data, 
+          family = binomial)
+
+# Likelihood Ratio Test 
+anova(model_reduced, model_all, test = "Chisq")
+
+# Fit the reduced model (removes the categorical variable "barron_rank")
+model_reduced <- glm(ds_program ~ type + public_private + size + 
+          land_grant + access_earnings + admitted + women + international + 
+          hispanic + black + asian + white + undergrad_enrollment_ft + graduation +
+          endowment_per_fte + equity_ratio + core_expenses + endowment + 
+          fte_staff + average_salary + retention + pell + awarded_aid, 
+          data = institutional_data, 
+          family = binomial)
+
+# Likelihood Ratio Test 
+anova(model_reduced, model_all, test = "Chisq")
+
+# Fit the reduced model (removes the categorical variable "size")
+model_reduced <- glm(ds_program ~ type + barron_rank + public_private + 
+          land_grant + access_earnings + admitted + women + international + 
+          hispanic + black + asian + white + undergrad_enrollment_ft + graduation +
+          endowment_per_fte + equity_ratio + core_expenses + endowment + 
+          fte_staff + average_salary + retention + pell + awarded_aid, 
+          data = institutional_data, 
+          family = binomial)
+
+# Likelihood Ratio Test 
+anova(model_reduced, model_all, test = "Chisq")
+
+# Fit the reduced model (removes the categorical variable "access_earnings")
+model_reduced <- glm(ds_program ~ type + barron_rank + public_private + 
+          land_grant + admitted + women + international + 
+          hispanic + black + asian + white + undergrad_enrollment_ft + graduation +
+          endowment_per_fte + equity_ratio + core_expenses + endowment + 
+          fte_staff + average_salary + retention + pell + awarded_aid, 
+          data = institutional_data, 
+          family = binomial)
+
+# Likelihood Ratio Test 
+anova(model_reduced, model_all, test = "Chisq")
+
 # Get results
 summary(model_all)
 
