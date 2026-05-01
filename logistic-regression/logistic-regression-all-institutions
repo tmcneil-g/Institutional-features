@@ -75,7 +75,7 @@ model_all <- glm(ds_program ~ type + barron_rank + public_private + size +
           data = institutional_data, 
           family = binomial)
 
-#Check VIF values
+# Check VIF values
 vif(model_all)
 
 # Test whether categorical variables (with 3+ levels) are significant overall 
