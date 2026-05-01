@@ -53,6 +53,7 @@ model_all <- glm(ds_program ~ usnews_rank + public_private + size +
                 data = institutional_data, 
                 family = binomial)
 
+# Check VIF values
 vif(model_all)
 
 # Fit the reduced model (removes the categorical variable "size")
