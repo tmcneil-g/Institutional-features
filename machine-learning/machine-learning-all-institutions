@@ -40,8 +40,6 @@ institutional_data$barron_rank <- factor(institutional_data$barron_rank,
 # Center and scale continuous independent variables
 institutional_data$average_salary <- scale(institutional_data$average_salary, 
                                      center = TRUE, scale = TRUE)
-institutional_data$fte_staff <- scale(institutional_data$fte_staff, 
-                                center = TRUE, scale = TRUE)
 institutional_data$endowment <- scale(institutional_data$endowment, 
                                 center = TRUE, scale = TRUE)
 institutional_data$core_expenses <- scale(institutional_data$core_expenses, 
@@ -55,8 +53,6 @@ institutional_data$women <- scale(institutional_data$women,
                             center = TRUE, scale = TRUE)
 institutional_data$international <- scale(institutional_data$international, 
                                     center = TRUE, scale = TRUE)
-institutional_data$white <- scale(institutional_data$white, 
-                            center = TRUE, scale = TRUE)
 institutional_data$hispanic <- scale(institutional_data$hispanic, 
                                center = TRUE, scale = TRUE)
 institutional_data$black <- scale(institutional_data$black, 
@@ -72,8 +68,6 @@ institutional_data$equity_ratio <- scale(institutional_data$equity_ratio,
                                    center = TRUE, scale = TRUE)
 institutional_data$equity_ratio <- scale(institutional_data$equity_ratio, 
                                    center = TRUE, scale = TRUE)
-institutional_data$retention <- scale(institutional_data$retention, 
-                                   center = TRUE, scale = TRUE)
 institutional_data$pell <- scale(institutional_data$pell, 
                                    center = TRUE, scale = TRUE)
 institutional_data$awarded_aid <- scale(institutional_data$awarded_aid, 
@@ -83,9 +77,9 @@ institutional_data$awarded_aid <- scale(institutional_data$awarded_aid,
 set.seed(1985)
 trainIndex <- createDataPartition(institutional_data$ds_program, p=0.8, list = FALSE, times = 1)
 
-# Remove institution column
+# Remove columns
 institutional_data <- institutional_data %>%
-  select(-institution)
+  select(-institution, -white, -retention, -fte_staff)
 
 # Create train and test indices for random forest
 train <- institutional_data[trainIndex,]
@@ -108,7 +102,11 @@ fitCtrl <- trainControl(method = "repeatedcv",
                         allowParallel = TRUE)
 
 # Set testing grid for random forest
-rfGrid <- expand.grid(mtry = 1:6)
+p <- ncol(institutional_data)  # number of predictors
+
+tuneGrid <- expand.grid(
+  mtry = seq(1, p, by = 1)
+)
 
 # Random forest
 rf.res <- train(ds_program ~ .,
