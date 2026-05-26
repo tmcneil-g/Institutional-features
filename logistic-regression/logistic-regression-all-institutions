@@ -3,6 +3,7 @@
 library(stats)
 library(car)
 library(dplyr)
+library(pROC)
 
 # Read data
 institutional_data <- read.csv(file = "data/institutional_data_all.csv")
@@ -143,3 +144,12 @@ with(model_all, pchisq(null.deviance - deviance, df.null - df.residual, lower.ta
 
 # Get the number of observations in model
 nobs(model_all)
+
+# Get predicted probabilities
+pred_probs <- predict(model_all, type = "response")
+
+# Compute ROC curve
+roc_obj <- roc(institutional_data$ds_program, pred_probs)
+
+# Get AUC
+auc(roc_obj)
