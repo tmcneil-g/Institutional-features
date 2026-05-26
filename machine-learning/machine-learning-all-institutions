@@ -11,6 +11,7 @@ library(dplyr)
 library(gbm)
 library(quadprog)
 library(nnet)
+library(pROC)
 
 # Convention to leave 1 core for OS
 cl <- makeCluster(detectCores() - 1)
@@ -127,6 +128,19 @@ confusionMatrix(predict(rf.res, test, type="raw"), test$ds_program)
 # Variable importance for random forest
 rfImp <- varImp(rf.res)
 plot(rfImp)
+
+# Get predicted probabilities for the positive class
+rf_probs <- predict(
+  rf.res,
+  newdata = test,
+  type = "prob"
+)[,2]
+
+# Compute ROC curve and AUC
+roc_obj <- roc(test$ds_program, rf_probs)
+
+# Print AUC
+auc(roc_obj)
 
 # Gradient boosting machine
 # Set control parameters for model training for gradient boosting machine
