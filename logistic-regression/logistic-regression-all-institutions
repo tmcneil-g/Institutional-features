@@ -4,6 +4,8 @@ library(stats)
 library(car)
 library(dplyr)
 library(pROC)
+library(MuMIn)
+library(broom)
 
 # Read data
 institutional_data <- read.csv(file = "data/institutional_data_all.csv")
@@ -153,3 +155,7 @@ roc_obj <- roc(institutional_data$ds_program, pred_probs)
 
 # Get AUC
 auc(roc_obj)
+
+# Calculate AICc
+AICc(model_all)
+
