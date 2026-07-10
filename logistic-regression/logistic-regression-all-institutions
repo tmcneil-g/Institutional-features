@@ -16,50 +16,25 @@ institutional_data$type <- factor(institutional_data$type)
 institutional_data$ds_program <- factor(institutional_data$ds_program, 
                                         labels=c("DS", "No_DS"))
 institutional_data$public_private <- factor(institutional_data$public_private)
-institutional_data$land_grant <- factor(institutional_data$land_grant)
 institutional_data$barron_rank <- factor(institutional_data$barron_rank, 
                                          ordered = TRUE)
 
 # Center and scale continuous independent variables
-institutional_data$retention <- scale(institutional_data$retention, 
-                                 center = TRUE, scale = TRUE)
-institutional_data$pell <- scale(institutional_data$pell, 
-                                 center = TRUE, scale = TRUE)
-
-institutional_data$equity_ratio <- scale(institutional_data$equity_ratio, 
-                                         center = TRUE, scale = TRUE)
-institutional_data$core_expenses <- scale(institutional_data$core_expenses, 
-                                          center = TRUE, scale = TRUE)
-institutional_data$awarded_aid <- scale(institutional_data$awarded_aid, 
-                                        center = TRUE, scale = TRUE)
-
 institutional_data$endowment <- scale(institutional_data$endowment, 
                                       center = TRUE, scale = TRUE)
-
-institutional_data$endowment_per_fte <- scale(institutional_data$endowment_per_fte, 
-                                      center = TRUE, scale = TRUE)
-
 institutional_data$admitted <- scale(institutional_data$admitted, 
                                      center = TRUE, scale = TRUE)
 institutional_data$women <- scale(institutional_data$women, 
                                   center = TRUE, scale = TRUE)
 institutional_data$international <- scale(institutional_data$international, 
                                           center = TRUE, scale = TRUE)
-institutional_data$hispanic <- scale(institutional_data$hispanic, 
-                                     center = TRUE, scale = TRUE)
-
 institutional_data$undergrad_enrollment_ft <- 
   scale(institutional_data$undergrad_enrollment_ft, 
         center = TRUE, scale = TRUE)
-institutional_data$per_minority <- 
-  scale(institutional_data$per_minority, 
+institutional_data$per_minority <- scale(institutional_data$per_minority, 
         center = TRUE, scale = TRUE)
-institutional_data$graduation <- scale(institutional_data$graduation, 
-                                       center = TRUE, scale = TRUE)
 institutional_data$fte_staff <- scale(institutional_data$fte_staff, 
                                        center = TRUE, scale = TRUE)
-institutional_data$average_salary <- scale(institutional_data$average_salary, 
-                                           center = TRUE, scale = TRUE)
 
 # Run logistic regression
 model_all <- glm(ds_program ~ type * undergrad_enrollment_ft + endowment + per_minority + barron_rank + public_private +
