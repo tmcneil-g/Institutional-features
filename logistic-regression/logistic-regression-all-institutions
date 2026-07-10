@@ -5,40 +5,40 @@ library(car)
 library(dplyr)
 library(pROC)
 library(MuMIn)
+library(emmeans)
 library(broom)
 
 # Read data
-institutional_data <- read.csv(file = "data/institutional_data_all.csv")
-
-# Drop rows with missing data
-institutional_data <- institutional_data %>%
-  filter(access_earnings > 0)
-
-# Drop rows with missing data again
-institutional_data <- na.omit(institutional_data)
+institutional_data <- read.csv(file = "data/institutional_data_all_9.csv")
 
 # Convert variables into categorical (factor) variables
 institutional_data$type <- factor(institutional_data$type)
 institutional_data$ds_program <- factor(institutional_data$ds_program, 
                                         labels=c("DS", "No_DS"))
 institutional_data$public_private <- factor(institutional_data$public_private)
-institutional_data$size <- factor(institutional_data$size, ordered = TRUE)
 institutional_data$land_grant <- factor(institutional_data$land_grant)
 institutional_data$barron_rank <- factor(institutional_data$barron_rank, 
-                                       ordered = TRUE)
-institutional_data$access_earnings <- factor(institutional_data$access_earnings, 
-                                             ordered = TRUE)
+                                         ordered = TRUE)
 
 # Center and scale continuous independent variables
-institutional_data$average_salary <- scale(institutional_data$average_salary, 
-                                           center = TRUE, scale = TRUE)
-institutional_data$endowment <- scale(institutional_data$endowment, 
-                                      center = TRUE, scale = TRUE)
+institutional_data$retention <- scale(institutional_data$retention, 
+                                 center = TRUE, scale = TRUE)
+institutional_data$pell <- scale(institutional_data$pell, 
+                                 center = TRUE, scale = TRUE)
+
+institutional_data$equity_ratio <- scale(institutional_data$equity_ratio, 
+                                         center = TRUE, scale = TRUE)
 institutional_data$core_expenses <- scale(institutional_data$core_expenses, 
                                           center = TRUE, scale = TRUE)
-institutional_data$endowment_per_fte <- 
-  scale(institutional_data$endowment_per_fte, 
-        center = TRUE, scale = TRUE)
+institutional_data$awarded_aid <- scale(institutional_data$awarded_aid, 
+                                        center = TRUE, scale = TRUE)
+
+institutional_data$endowment <- scale(institutional_data$endowment, 
+                                      center = TRUE, scale = TRUE)
+
+institutional_data$endowment_per_fte <- scale(institutional_data$endowment_per_fte, 
+                                      center = TRUE, scale = TRUE)
+
 institutional_data$admitted <- scale(institutional_data$admitted, 
                                      center = TRUE, scale = TRUE)
 institutional_data$women <- scale(institutional_data$women, 
@@ -47,46 +47,39 @@ institutional_data$international <- scale(institutional_data$international,
                                           center = TRUE, scale = TRUE)
 institutional_data$hispanic <- scale(institutional_data$hispanic, 
                                      center = TRUE, scale = TRUE)
-institutional_data$black <- scale(institutional_data$black, 
-                                  center = TRUE, scale = TRUE)
-institutional_data$asian <- scale(institutional_data$asian, 
-                                  center = TRUE, scale = TRUE)
+
 institutional_data$undergrad_enrollment_ft <- 
   scale(institutional_data$undergrad_enrollment_ft, 
         center = TRUE, scale = TRUE)
+institutional_data$per_minority <- 
+  scale(institutional_data$per_minority, 
+        center = TRUE, scale = TRUE)
 institutional_data$graduation <- scale(institutional_data$graduation, 
                                        center = TRUE, scale = TRUE)
-institutional_data$equity_ratio <- scale(institutional_data$equity_ratio, 
-                                         center = TRUE, scale = TRUE)
-institutional_data$pell <- scale(institutional_data$pell, 
-                                 center = TRUE, scale = TRUE)
-institutional_data$awarded_aid <- scale(institutional_data$awarded_aid, 
-                                        center = TRUE, scale = TRUE)
+institutional_data$fte_staff <- scale(institutional_data$fte_staff, 
+                                       center = TRUE, scale = TRUE)
+institutional_data$average_salary <- scale(institutional_data$average_salary, 
+                                           center = TRUE, scale = TRUE)
 
 # Run logistic regression
-model_all <- glm(ds_program ~ type + barron_rank + public_private + size + 
-                   land_grant + admitted + women + international + 
-                   hispanic + black + asian + undergrad_enrollment_ft + graduation +
-                   endowment_per_fte + equity_ratio + core_expenses + endowment + 
-                   average_salary + pell + awarded_aid + access_earnings, 
+model_all <- glm(ds_program ~ type * undergrad_enrollment_ft + endowment + per_minority + barron_rank + public_private +
+                   admitted + women + international + fte_staff, 
                  data = institutional_data, 
                  family = binomial)
 
-#Check VIF values
+# Extract Cook's Distance values
+cooks_vals <- cooks.distance(model_all)
+
+# Generates a bar chart of Cook's Distance values per observation
+plot(model_all, which = 4)
+
+# Check VIF values
 vif(model_all)
 
-# Check correlation for continuous variables 
-cor(institutional_data[, c("admitted", "undergrad_enrollment_ft", "graduation", "endowment_per_fte", "equity_ratio", "core_expenses", 
-                           "endowment", "fte_staff", "average_salary", "retention", "pell", "awarded_aid")])
-
 # Test whether categorical variables (with 3+ levels) are significant overall 
-
 # Fit the reduced model (removes the categorical variable "type")
-model_reduced <- glm(ds_program ~ barron_rank + public_private + size + 
-                       land_grant + admitted + women + international + 
-                       hispanic + black + asian + undergrad_enrollment_ft + graduation +
-                       endowment_per_fte + equity_ratio + core_expenses + endowment + 
-                       average_salary + pell + awarded_aid + access_earnings, 
+model_reduced <- glm(ds_program ~ undergrad_enrollment_ft + endowment +  per_minority + barron_rank + public_private +  
+                       admitted + women + international + fte_staff,
                      data = institutional_data, 
                      family = binomial)
 
@@ -94,58 +87,28 @@ model_reduced <- glm(ds_program ~ barron_rank + public_private + size +
 anova(model_reduced, model_all, test = "Chisq")
 
 # Fit the reduced model (removes the categorical variable "barron_rank")
-model_reduced <- glm(ds_program ~ type + public_private + size + 
-                       land_grant + admitted + women + international + 
-                       hispanic + black + asian + undergrad_enrollment_ft + graduation +
-                       endowment_per_fte + equity_ratio + core_expenses + endowment + 
-                       average_salary + pell + awarded_aid + access_earnings, 
+model_reduced <- glm(ds_program ~ type * undergrad_enrollment_ft + endowment +  per_minority + public_private +  
+                       admitted + women + international + fte_staff,
                      data = institutional_data, 
                      family = binomial)
 
 # Likelihood Ratio Test 
 anova(model_reduced, model_all, test = "Chisq")
 
-# Fit the reduced model (removes the categorical variable "size")
-model_reduced <- glm(ds_program ~ type + barron_rank + public_private + 
-                       land_grant + admitted + women + international + 
-                       hispanic + black + asian + undergrad_enrollment_ft + graduation +
-                       endowment_per_fte + equity_ratio + core_expenses + endowment + 
-                       average_salary + pell + awarded_aid + access_earnings, 
-                     data = institutional_data, 
-                     family = binomial)
+# Get significance of the overall model
+with(model_all, null.deviance - deviance)
 
-# Likelihood Ratio Test 
-anova(model_reduced, model_all, test = "Chisq")
+# Get p-value of overall model
+with(model_all, pchisq(null.deviance - deviance, df.null - df.residual, lower.tail = FALSE))
 
-# Fit the reduced model (removes the categorical variable "access_earnings")
-model_reduced <- glm(ds_program ~ type + barron_rank + public_private + 
-                       land_grant + admitted + women + international + 
-                       hispanic + black + asian + undergrad_enrollment_ft + graduation +
-                       endowment_per_fte + equity_ratio + core_expenses + endowment + 
-                       average_salary + pell + awarded_aid, 
-                     data = institutional_data, 
-                     family = binomial)
-
-# Likelihood Ratio Test 
-anova(model_reduced, model_all, test = "Chisq")
-
-# Get results
+# Get results of model
 summary(model_all)
 
 # Get the exponentiated coefficients
 exp(coef(model_all))
 
-# Get significance of the overall model
-with(model_all, null.deviance - deviance)
-
-# Get the degrees of freedom for the difference between the two models 
-with(model_all, df.null - df.residual)
-
-# Get p-value
-with(model_all, pchisq(null.deviance - deviance, df.null - df.residual, lower.tail = FALSE))
-
-# Get the number of observations in model
-nobs(model_all)
+# Calculate AICc
+AICc(model_all)
 
 # Get predicted probabilities
 pred_probs <- predict(model_all, type = "response")
@@ -156,6 +119,15 @@ roc_obj <- roc(institutional_data$ds_program, pred_probs)
 # Get AUC
 auc(roc_obj)
 
-# Calculate AICc
-AICc(model_all)
+# Number of data science programs
+table(institutional_data$ds_program)
 
+# Refine and format the table 
+clean_table <- tidy(model_all) %>%
+  mutate(odds_ratio = exp(estimate)) %>%
+  select(term, estimate, std.error, statistic, p.value, odds_ratio) %>%
+  mutate(across(where(is.numeric), ~ round(., 2)))
+
+print(clean_table)
+
+View(clean_table)
