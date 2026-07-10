@@ -1,86 +1,57 @@
-# Logistic regression for presence of undergraduate data science major at liberal arts institutions
+# Logistic regression for presence of undergraduate data science major
+# for liberal arts institutions using U.S. News ranking
 
 library(stats)
 library(car)
 library(dplyr)
+library(pROC)
+library(MuMIn)
+library(emmeans)
+library(broom)
 
 # Read data
-institutional_data <- read.csv(file = "data/liberal_arts_3.csv")
-
-# Drop rows with missing data again
-institutional_data <- na.omit(institutional_data)
+institutional_data <- read.csv(file = "data/institutional_data_all_9_la_original.csv")
 
 # Convert variables into categorical (factor) variables
 institutional_data$ds_program <- factor(institutional_data$ds_program, 
-        labels=c("DS", "No_DS"))
+                                        labels=c("DS", "No_DS"))
 institutional_data$public_private <- factor(institutional_data$public_private)
-institutional_data$size <- factor(institutional_data$size, ordered = TRUE)
+institutional_data$barron_rank <- factor(institutional_data$barron_rank, 
+                                         ordered = TRUE)
 
 # Center and scale continuous independent variables
-institutional_data$fte_staff <- scale(institutional_data$fte_staff, 
-                                center = TRUE, scale = TRUE)
 institutional_data$endowment <- scale(institutional_data$endowment, 
-                                center = TRUE, scale = TRUE)
-institutional_data$core_expenses <- scale(institutional_data$core_expenses, 
-                                    center = TRUE, scale = TRUE)
+                                      center = TRUE, scale = TRUE)
 institutional_data$admitted <- scale(institutional_data$admitted, 
-                               center = TRUE, scale = TRUE)
+                                     center = TRUE, scale = TRUE)
 institutional_data$women <- scale(institutional_data$women, 
-                            center = TRUE, scale = TRUE)
+                                  center = TRUE, scale = TRUE)
 institutional_data$international <- scale(institutional_data$international, 
-                                    center = TRUE, scale = TRUE)
-institutional_data$white <- scale(institutional_data$white, 
-                            center = TRUE, scale = TRUE)
-institutional_data$hispanic <- scale(institutional_data$hispanic, 
-                               center = TRUE, scale = TRUE)
-institutional_data$black <- scale(institutional_data$black, 
-                            center = TRUE, scale = TRUE)
-institutional_data$asian <- scale(institutional_data$asian, 
-                            center = TRUE, scale = TRUE)
+                                          center = TRUE, scale = TRUE)
 institutional_data$undergrad_enrollment_ft <- 
   scale(institutional_data$undergrad_enrollment_ft, 
-  center = TRUE, scale = TRUE)
-institutional_data$graduation <- scale(institutional_data$graduation, 
-                                 center = TRUE, scale = TRUE)
+        center = TRUE, scale = TRUE)
+institutional_data$per_minority <- scale(institutional_data$per_minority, 
+        center = TRUE, scale = TRUE)
+institutional_data$fte_staff <- scale(institutional_data$fte_staff, 
+                                       center = TRUE, scale = TRUE)
 institutional_data$usnews_rank <- scale(institutional_data$usnews_rank, 
-                                  center = TRUE, scale = TRUE)
+                                       center = TRUE, scale = TRUE)
 
 # Run logistic regression
-model_all <- glm(ds_program ~ usnews_rank + public_private + size + 
-                admitted + women + international + 
-                hispanic + black + asian + white + undergrad_enrollment_ft + graduation +
-                equity_ratio + core_expenses + endowment + fte_staff, 
-                data = institutional_data, 
-                family = binomial)
+model_all <- glm(ds_program ~ undergrad_enrollment_ft + endowment + per_minority + usnews_rank + public_private +
+                   admitted + women + international + fte_staff, 
+                 data = institutional_data, 
+                 family = binomial)
+
+# Extract Cook's Distance values
+cooks_vals <- cooks.distance(model_all)
+
+# Generates a bar chart of Cook's Distance values per observation
+plot(model_all, which = 4)
 
 # Check VIF values
 vif(model_all)
-
-# Fit the reduced model (removes the categorical variable "size")
-model_reduced <- glm(ds_program ~ usnews_rank + public_private + access_earnings + admitted + 
-                women + international + hispanic + black + asian + white + 
-                undergrad_enrollment_ft + graduation + endowment_per_fte + equity_ratio + 
-                core_expenses + endowment + fte_staff + average_salary + retention + pell + 
-                awarded_aid, 
-                data = institutional_data, 
-          family = binomial)
-
-# Likelihood Ratio Test 
-anova(model_reduced, model_all, test = "Chisq")
-
-# Fit the reduced model (removes the categorical variable "access_earnings")
-model_reduced <- glm(ds_program ~ usnews_rank + public_private + admitted + women + 
-                international + hispanic + black + asian + white + 
-                undergrad_enrollment_ft + graduation + endowment_per_fte + equity_ratio + 
-                core_expenses + endowment + fte_staff + average_salary + retention + pell + 
-                awarded_aid, 
-          data = institutional_data, 
-          family = binomial)
-
-# Likelihood Ratio Test 
-anova(model_reduced, model_all, test = "Chisq")
-summary(model_all)
-exp(coef(model_all))
 
 # Get significance of the overall model
 with(model_all, null.deviance - deviance)
@@ -88,5 +59,39 @@ with(model_all, null.deviance - deviance)
 # Get the degrees of freedom for the difference between the two models 
 with(model_all, df.null - df.residual)
 
-# Get p-value
+# Get p-value of overall model
 with(model_all, pchisq(null.deviance - deviance, df.null - df.residual, lower.tail = FALSE))
+
+# Get the number of observations in model
+nobs(model_all)
+
+# Get results of model
+summary(model_all)
+
+# Get the exponentiated coefficients
+exp(coef(model_all))
+
+# Calculate AICc
+AICc(model_all)
+
+# Get predicted probabilities
+pred_probs <- predict(model_all, type = "response")
+
+# Compute ROC curve
+roc_obj <- roc(institutional_data$ds_program, pred_probs)
+
+# Get AUC
+auc(roc_obj)
+
+# Number of data science programs
+table(institutional_data$ds_program)
+
+# Refine and format the table 
+clean_table <- tidy(model_all) %>%
+  mutate(odds_ratio = exp(estimate)) %>%
+  select(term, estimate, std.error, statistic, p.value, odds_ratio) %>%
+  mutate(across(where(is.numeric), ~ round(., 2)))
+
+print(clean_table)
+
+View(clean_table) deviance, df.null - df.residual, lower.tail = FALSE))
