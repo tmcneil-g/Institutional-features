@@ -1,4 +1,5 @@
 # Logistic regression for presence of undergraduate data science major
+# for all institutions using Barron's ranking
 
 library(stats)
 library(car)
