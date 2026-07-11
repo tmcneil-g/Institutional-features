@@ -10,7 +10,7 @@ library(emmeans)
 library(broom)
 
 # Read data
-institutional_data <- read.csv(file = "data/institutional_data_all_9.csv")
+institutional_data <- read.csv(file = "data/institutional_data_all_10.csv")
 
 # Convert variables into categorical (factor) variables
 institutional_data$type <- factor(institutional_data$type)
