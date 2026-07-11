@@ -36,10 +36,14 @@ institutional_data$per_minority <- scale(institutional_data$per_minority,
         center = TRUE, scale = TRUE)
 institutional_data$fte_staff <- scale(institutional_data$fte_staff, 
                                        center = TRUE, scale = TRUE)
+institutional_data$core_expenses <- scale(institutional_data$core_expenses, 
+                                       center = TRUE, scale = TRUE)
+institutional_data$endowment_per_fte <- scale(institutional_data$endowment_per_fte, 
+                                       center = TRUE, scale = TRUE)
 
 # Run logistic regression
-model_all <- glm(ds_program ~ type * undergrad_enrollment_ft + endowment + per_minority + barron_rank + public_private +
-                   admitted + women + international + fte_staff, 
+model_all <- glm(ds_program ~ type * undergrad_enrollment_ft + endowment + per_minority + 
+              barron_rank + public_private + admitted + women + international + fte_staff, 
                  data = institutional_data, 
                  family = binomial)
 
@@ -54,8 +58,8 @@ vif(model_all)
 
 # Test whether categorical variables (with 3+ levels) are significant overall 
 # Fit the reduced model (removes the categorical variable "type")
-model_reduced <- glm(ds_program ~ undergrad_enrollment_ft + endowment +  per_minority + barron_rank + public_private +  
-                       admitted + women + international + fte_staff,
+model_reduced <- glm(ds_program ~ undergrad_enrollment_ft + endowment +  per_minority + 
+                  barron_rank + public_private + admitted + women + international + fte_staff,
                      data = institutional_data, 
                      family = binomial)
 
@@ -63,8 +67,8 @@ model_reduced <- glm(ds_program ~ undergrad_enrollment_ft + endowment +  per_min
 anova(model_reduced, model_all, test = "Chisq")
 
 # Fit the reduced model (removes the categorical variable "barron_rank")
-model_reduced <- glm(ds_program ~ type * undergrad_enrollment_ft + endowment +  per_minority + public_private +  
-                       admitted + women + international + fte_staff,
+model_reduced <- glm(ds_program ~ type * undergrad_enrollment_ft + endowment +  per_minority + 
+                  public_private + admitted + women + international + fte_staff,
                      data = institutional_data, 
                      family = binomial)
 
@@ -78,7 +82,8 @@ with(model_all, null.deviance - deviance)
 with(model_all, df.null - df.residual)
 
 # Get p-value of overall model
-with(model_all, pchisq(null.deviance - deviance, df.null - df.residual, lower.tail = FALSE))
+with(model_all, pchisq(null.deviance - deviance, df.null - df.residual, 
+  lower.tail = FALSE))
 
 # Get the number of observations in model
 nobs(model_all)
@@ -100,6 +105,26 @@ roc_obj <- roc(institutional_data$ds_program, pred_probs)
 
 # Get AUC
 auc(roc_obj)
+
+# Run logistic regression, including core expenses instead of fte_staff
+model_all <- glm(ds_program ~ type * undergrad_enrollment_ft + endowment +
+              per_minority + barron_rank + public_private + admitted + women + 
+              international + core_expenses, 
+                 data = institutional_data, 
+                 family = binomial)
+
+# Calculate AICc
+AICc(model_all)
+
+# Run logistic regression, including endowment_per_fte instead of endowment
+model_all <- glm(ds_program ~ type * undergrad_enrollment_ft + endowment_per_fte +
+              per_minority + barron_rank + public_private + admitted + women + 
+              international + core_expenses, 
+                 data = institutional_data, 
+                 family = binomial)
+
+# Calculate AICc
+AICc(model_all)
 
 # Number of data science programs
 table(institutional_data$ds_program)
