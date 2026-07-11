@@ -39,8 +39,9 @@ institutional_data$usnews_rank <- scale(institutional_data$usnews_rank,
                                        center = TRUE, scale = TRUE)
 
 # Run logistic regression
-model_all <- glm(ds_program ~ undergrad_enrollment_ft + endowment + per_minority + usnews_rank + public_private +
-                   admitted + women + international + fte_staff, 
+model_all <- glm(ds_program ~ undergrad_enrollment_ft + endowment + 
+              per_minority + usnews_rank + public_private + admitted + 
+              women + international + fte_staff, 
                  data = institutional_data, 
                  family = binomial)
 
@@ -60,7 +61,8 @@ with(model_all, null.deviance - deviance)
 with(model_all, df.null - df.residual)
 
 # Get p-value of overall model
-with(model_all, pchisq(null.deviance - deviance, df.null - df.residual, lower.tail = FALSE))
+with(model_all, pchisq(null.deviance - deviance, df.null - df.residual, 
+  lower.tail = FALSE))
 
 # Get the number of observations in model
 nobs(model_all)
