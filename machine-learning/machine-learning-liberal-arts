@@ -64,7 +64,7 @@ trainIndex <- createDataPartition(institutional_data$ds_program, p=0.8, list = F
 # Remove columns
 institutional_data <- institutional_data %>%
   select(-institution, -white, -hispanic, -black, -asian, -amindian, -pacific, 
-  -two_races, -endowment_per_fte, -core_expenses, -barron_rank)
+  -two_races, -endowment_per_fte, -core_expenses, -barron_rank, -type)
 
 # Create train and test indices
 train <- institutional_data[trainIndex,]
