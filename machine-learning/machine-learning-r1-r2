@@ -1,5 +1,5 @@
-# Machine learning of institutional variables, random forest and gradient boosting machine, 
-#  for R1 and R2 institutions using U.S. News and World Report rankings
+# Machine learning of institutional variables for R1 and R2 institutions, 
+# random forest and gradient boosting using U.S. News and World Report rankings
 # Torbet McNeil
 # tmcneil@email.arizona.edu
 # 2026-3-23
@@ -12,78 +12,59 @@ library(dplyr)
 library(gbm)
 library(quadprog)
 library(nnet)
+library(pROC)
 
 # Convention to leave 1 core for OS
 cl <- makeCluster(detectCores() - 1)
 
 # Read in data
-institutional_data <- read.csv(file = "data/institutional_r1_r2.csv")
-
-# Drop rows with missing data
-institutional_data <- institutional_data %>%
-  filter(access_earnings > 0)
-
-# Drop rows with missing data again
-institutional_data <- na.omit(institutional_data)
+institutional_data <- read.csv(file = "data/institutional_data_r1r2_b.csv")
 
 # Convert variables in dataset into categorical (factor) variables
 institutional_data$type <- factor(institutional_data$type)
-institutional_data$ds_program <- factor(institutional_data$ds_program, labels=c("DS", "No_DS"))
+institutional_data$ds_program <- factor(institutional_data$ds_program, 
+                                        labels=c("DS", "No_DS"))
 institutional_data$public_private <- factor(institutional_data$public_private)
-institutional_data$size <- factor(institutional_data$size, ordered = TRUE)
-institutional_data$land_grant <- factor(institutional_data$land_grant)
-institutional_data$access_earnings <- factor(institutional_data$access_earnings, ordered = TRUE)
-institutional_data$usnews_rank <- factor(institutional_data$usnews_rank, ordered = TRUE)
+institutional_data$barron_rank <- factor(institutional_data$barron_rank, 
+                                         ordered = TRUE)
 
 # Center and scale continuous independent variables
-institutional_data$average_salary <- scale(institutional_data$average_salary, 
-                                           center = TRUE, scale = TRUE)
-institutional_data$fte_staff <- scale(institutional_data$fte_staff, 
-                                      center = TRUE, scale = TRUE)
+# Center and scale continuous independent variables
 institutional_data$endowment <- scale(institutional_data$endowment, 
                                       center = TRUE, scale = TRUE)
-institutional_data$core_expenses <- scale(institutional_data$core_expenses, 
-                                          center = TRUE, scale = TRUE)
-institutional_data$endowment_per_fte <- 
-  scale(institutional_data$endowment_per_fte, 
-        center = TRUE, scale = TRUE)
 institutional_data$admitted <- scale(institutional_data$admitted, 
                                      center = TRUE, scale = TRUE)
 institutional_data$women <- scale(institutional_data$women, 
                                   center = TRUE, scale = TRUE)
 institutional_data$international <- scale(institutional_data$international, 
                                           center = TRUE, scale = TRUE)
-institutional_data$white <- scale(institutional_data$white, 
-                                  center = TRUE, scale = TRUE)
-institutional_data$hispanic <- scale(institutional_data$hispanic, 
-                                     center = TRUE, scale = TRUE)
-institutional_data$black <- scale(institutional_data$black, 
-                                  center = TRUE, scale = TRUE)
-institutional_data$asian <- scale(institutional_data$asian, 
-                                  center = TRUE, scale = TRUE)
 institutional_data$undergrad_enrollment_ft <- 
   scale(institutional_data$undergrad_enrollment_ft, 
         center = TRUE, scale = TRUE)
-institutional_data$graduation <- scale(institutional_data$graduation, 
+institutional_data$per_minority <- scale(institutional_data$per_minority, 
+        center = TRUE, scale = TRUE)
+institutional_data$fte_staff <- scale(institutional_data$fte_staff, 
                                        center = TRUE, scale = TRUE)
-institutional_data$graduation <- scale(institutional_data$graduation, 
+institutional_data$core_expenses <- scale(institutional_data$core_expenses, 
                                        center = TRUE, scale = TRUE)
-institutional_data$equity_ratio <- scale(institutional_data$equity_ratio, 
-                                         center = TRUE, scale = TRUE)
-institutional_data$retention <- scale(institutional_data$retention, 
-                                   center = TRUE, scale = TRUE)
-institutional_data$pell <- scale(institutional_data$pell, 
-                                   center = TRUE, scale = TRUE)
-institutional_data$awarded_aid <- scale(institutional_data$awarded_aid, 
-                                   center = TRUE, scale = TRUE)
+institutional_data$endowment_per_fte <- 
+  scale(institutional_data$endowment_per_fte, 
+  center = TRUE, scale = TRUE)
+institutional_data$endowment_per_fte <- 
+  scale(institutional_data$endowment_per_fte, 
+  center = TRUE, scale = TRUE)
+institutional_data$usnews_rank <- 
+  scale(institutional_data$usnews_rank, 
+  center = TRUE, scale = TRUE)
 
 # Split data
 set.seed(1985)
 trainIndex <- createDataPartition(institutional_data$ds_program, p=0.8, list = FALSE, times = 1)
 
-# Remove institution column
+# Remove columns
 institutional_data <- institutional_data %>%
-  select(-institution)
+  select(-institution, -white, -hispanic, -black, -asian, -amindian, -pacific, 
+  -two_races, -endowment_per_fte, -core_expenses, -barron_rank)
 
 # Create train and test indices
 train <- institutional_data[trainIndex,]
