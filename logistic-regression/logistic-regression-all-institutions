@@ -107,24 +107,24 @@ roc_obj <- roc(institutional_data$ds_program, pred_probs)
 auc(roc_obj)
 
 # Run logistic regression, including core expenses instead of fte_staff
-model_all <- glm(ds_program ~ type * undergrad_enrollment_ft + endowment +
+model_all_1 <- glm(ds_program ~ type * undergrad_enrollment_ft + endowment +
               per_minority + barron_rank + public_private + admitted + women + 
               international + core_expenses, 
                  data = institutional_data, 
                  family = binomial)
 
 # Calculate AICc
-AICc(model_all)
+AICc(model_all_1)
 
 # Run logistic regression, including endowment_per_fte instead of endowment
-model_all <- glm(ds_program ~ type * undergrad_enrollment_ft + endowment_per_fte +
+model_all_2 <- glm(ds_program ~ type * undergrad_enrollment_ft + endowment_per_fte +
               per_minority + barron_rank + public_private + admitted + women + 
               international + core_expenses, 
                  data = institutional_data, 
                  family = binomial)
 
 # Calculate AICc
-AICc(model_all)
+AICc(model_all_2)
 
 # Number of data science programs
 table(institutional_data$ds_program)
@@ -138,3 +138,13 @@ clean_table <- tidy(model_all) %>%
 print(clean_table)
 
 View(clean_table)
+
+# Adjusted Predicted Probabilities for Barron's Ranking
+
+emm_results <- emmeans(
+  model_all,
+  ~ barron_rank,
+  type = "response"
+)
+
+summary(emm_results)
