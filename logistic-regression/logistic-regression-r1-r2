@@ -39,9 +39,9 @@ institutional_data$usnews_rank <- scale(institutional_data$usnews_rank,
                                        center = TRUE, scale = TRUE)
 
 # Run logistic regression
-model_all <- glm(ds_program ~ undergrad_enrollment_ft + endowment + 
-             per_minority + usnews_rank + public_private + admitted + 
-             women + international + fte_staff, 
+model_all <- glm(ds_program ~ type + undergrad_enrollment_ft + usnews_rank + 
+              public_private + admitted + per_minority + women + international +
+              endowment + fte_staff, 
                  data = institutional_data, 
                  family = binomial)
 
