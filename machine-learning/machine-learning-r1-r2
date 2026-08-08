@@ -109,6 +109,19 @@ confusionMatrix(predict(rf.res, test, type="raw"), test$ds_program)
 rfImp <- varImp(rf.res)
 plot(rfImp)
 
+# Get predicted probabilities for the positive class
+rf_probs <- predict(
+  rf.res,
+  newdata = test,
+  type = "prob"
+)[,No_DS]
+
+# Compute ROC curve and AUC
+roc_obj <- roc(test$ds_program, rf_probs)
+
+# Print AUC
+auc(roc_obj)
+
 # Gradient boosting machine
 # Set control parameters for model training for gradient boosting machine
 gbmGrid <-  expand.grid(n.trees = c(1:20)*100,
@@ -135,3 +148,12 @@ confusionMatrix(predict(gbm.res, test, type="raw"), test$ds_program)
 # Variable importance for gradient boosting machine 
 gbmImp <- varImp(gbm.res)
 plot(gbmImp)
+
+# Predicted probabilities for the positive class
+gbm_prob <- predict(gbm.res, test, type = "prob")[, "No_DS"]
+
+# ROC curve
+gbm_roc <- roc(test$ds_program, gbm_prob)
+
+# Print AUC
+auc(gbm_roc)
