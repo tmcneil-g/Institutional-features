@@ -112,7 +112,7 @@ rf_probs <- predict(
   rf.res,
   newdata = test,
   type = "prob"
-)[,2]
+)[,No_DS]
 
 # Compute ROC curve and AUC
 roc_obj <- roc(test$ds_program, rf_probs)
@@ -146,3 +146,14 @@ confusionMatrix(predict(gbm.res, test, type="raw"), test$ds_program)
 # Variable importance for gradient boosting machine 
 gbmImp <- varImp(gbm.res)
 plot(gbmImp)
+
+# Calculate AUC for the test set
+
+# Predicted probabilities for the positive class
+gbm_prob <- predict(gbm.res, test, type = "prob")[, "No_DS"]
+
+# ROC curve
+gbm_roc <- roc(test$ds_program, gbm_prob)
+
+# Print AUC
+auc(gbm_roc)
