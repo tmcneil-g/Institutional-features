@@ -87,7 +87,7 @@ fitCtrl <- trainControl(method = "repeatedcv",
                         allowParallel = TRUE)
 
 # Set testing grid for random forest
-rfGrid <- expand.grid(mtry = 1:6)
+rfGrid <-  expand.grid(mtry = 2:5)
 
 # Random forest
 rf.res <- train(ds_program ~ .,
@@ -114,7 +114,7 @@ rf_probs <- predict(
   rf.res,
   newdata = test,
   type = "prob"
-)[,No_DS]
+)[,"No_DS"]
 
 # Compute ROC curve and AUC
 roc_obj <- roc(test$ds_program, rf_probs)
