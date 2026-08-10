@@ -96,4 +96,4 @@ clean_table <- tidy(model_all) %>%
 
 print(clean_table)
 
-View(clean_table) deviance
+View(clean_table) 
